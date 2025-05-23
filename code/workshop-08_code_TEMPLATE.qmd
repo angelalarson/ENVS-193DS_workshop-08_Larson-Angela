@@ -44,6 +44,14 @@ library(ggeffects) # getting model predictions
 library(MuMIn) # model selection
 
 # read in your data here
+drought_exp <- read_xlsx(
+  # write in file path to data excel file
+  here("data", "Valliere_etal_EcoApps_Data.xlsx"),
+  
+  # specify the sheet i want to read in 
+  sheet = "First Harvest"
+  
+)
 
 ```
 
@@ -71,11 +79,11 @@ theme_set(theme_bw())
 # 2. Clean data
 
 ```{r data-cleaning}
-# INSERT COMMENT HERE
-drought_exp_clean <- drought_exp |> # INSERT COMMENT HERE
-  # INSERT COMMENT HERE
+# creating a clean data frame
+drought_exp_clean <- drought_exp |> # starting with drought_exp object
+  #  cleaning column names
   clean_names() |> 
-  # INSERT COMMENT HERE
+  # adding new column for scientific name
   mutate(species_name = case_match(
     species,
     "ENCCAL" ~ "Encelia californica", # bush sunflower
@@ -92,7 +100,7 @@ drought_exp_clean <- drought_exp |> # INSERT COMMENT HERE
     "WW" ~ "Well watered",
     "DS" ~ "Drought stressed"
   )) |> 
-  # INSERT COMMENT HERE
+  # creating a new column with full names for water treatment
   mutate(species_name = as_factor(species_name),
          species_name = fct_relevel(species_name,
                                     "Lotus scoparius",
@@ -102,12 +110,12 @@ drought_exp_clean <- drought_exp |> # INSERT COMMENT HERE
                                     "Stipa pulchra",
                                     "Eschscholzia californica",
                                     "Grindelia camporum")) |> 
-  # INSERT COMMENT HERE
+  # making sure that water_treatment and reordering levels
   mutate(water_treatment = as_factor(water_treatment),
          water_treatment = fct_relevel(water_treatment,
                                        "Drought stressed",
                                        "Well watered")) |> 
-  # INSERT COMMENT HERE
+  # selecting columns of interest
   select(species_name, water_treatment, sla, total_g)
 ```
 
@@ -121,8 +129,8 @@ And displaying some rows from the data frame:
 
 ```{r showing-data-frame-rows}
 slice_sample(
-  drought_exp_clean, # INSERT COMMENT HERE
-  n = 10 # INSERT COMMENT HERE
+  drought_exp_clean, # data frame
+  n = 10 # number of rows to display
 )
 ```
 
